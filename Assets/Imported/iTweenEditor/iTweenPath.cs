@@ -14,7 +14,8 @@ public class iTweenPath : MonoBehaviour
 	public string initialName = "";
 	
 	void OnEnable(){
-		paths.Add(pathName.ToLower(), this);
+		if(!paths.ContainsKey(pathName.ToLower()))
+			paths.Add(pathName.ToLower(), this);
 	}
 	
 	void OnDrawGizmosSelected(){

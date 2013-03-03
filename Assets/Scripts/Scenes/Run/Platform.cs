@@ -11,14 +11,21 @@ public class Platform : MonoBehaviour
 
     public Vector3 Center { get; set; }
     public float Speed { get; set; }
-    private float lastCrate = 0.0f;
-
+    private float lastShroom = 0.0f;
+	private float lastTree   = 0.0f;
+	
+	private float lastPeach = 0.0f;
+	
     public float cutoff = 23.5f;
     public float ground_y = 90f;
+	private int birds = 0;
+	private float nextBird = 0.0f;
+	private float fromBird = 0.0f;
+	private float lastBird = 0.0f;
 
     void Awake ()
     {
-        Speed = 3f;
+        Speed = 4f;
         Center = new Vector3 (525f, 440f, 0f);
 
         Regenerate ();
@@ -37,7 +44,7 @@ public class Platform : MonoBehaviour
         return nextPoint;
     }
 
-    private void Regenerate ()
+    private void Regenerate()
     {
         Vector3 point = new Vector3(Center.x, Center.y, 0);
         for (float i = 0; i < N; i+=0.5f)
@@ -50,17 +57,61 @@ public class Platform : MonoBehaviour
         }
     }
 
-    private void GenerateCrate()
+    private void GenerateShroom()
     {
-        var crate = GameObject.Instantiate(Resources.Load("Prefabs/Run/Crate"));
+        var shroom = GameObject.Instantiate(Resources.Load("Prefabs/Run/Mushroom"));
+    }
+	
+	private void GenerateTree()
+    {
+        var shroom = GameObject.Instantiate(Resources.Load("Prefabs/Run/Tree"));
     }
 
+	private void GenerateBird()
+    {
+        var shroom = GameObject.Instantiate(Resources.Load("Prefabs/Run/Birds"));
+    }
+	
+	private void GeneratePeach()
+    {
+        var shroom = GameObject.Instantiate(Resources.Load("Prefabs/Run/Peach"));
+    }
+
+	
     void Update ()
     {
-        if (Time.time - lastCrate > 2.7 && Random.value < 0.1f) {
-            GenerateCrate ();
-            lastCrate = Time.time;
+        if (Time.time - lastShroom > 2.7 && Random.value < 0.1f) {
+            GenerateShroom ();
+            lastShroom = Time.time;
         }
-    }
+
+	    /*
+	    if (Time.time - lastTree > 1.5 && Random.value < 0.1f) {
+            GenerateTree ();
+            lastTree = Time.time;
+        }
+        */
+		
+		if (Time.time > lastPeach + 10.0f && Random.value < 0.01f)
+		{
+			lastPeach = Time.time;
+			GeneratePeach();
+		}
+		
+		if (Random.value < 0.01f)
+		{
+			birds += Random.Range(1, 15);
+			nextBird = Random.Range(0.1f, 1.0f);
+		}
+		
+		fromBird += Time.deltaTime;
+		if (birds > 0 && fromBird > nextBird)
+		{
+			GenerateBird();
+			fromBird = 0.0f;
+			nextBird = Random.Range(0.1f, 1.0f);
+		}
+
+	}
 }
 
