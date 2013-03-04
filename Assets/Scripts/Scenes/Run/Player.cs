@@ -11,9 +11,10 @@ public class Player : MonoBehaviour
 {
     public PlayerStatus state = 0;
     private tk2dAnimatedSprite animation = null;
-	private int lives = 8;
+	private int lives = 2;
 	
-	private tk2dSprite[] hearts = new tk2dSprite[4];
+	private int maxLives = 2;
+	private tk2dSprite[] hearts = new tk2dSprite[1];
 	private UILabel peachLabel = null;
 	private int peaches = 0;
 	
@@ -21,7 +22,7 @@ public class Player : MonoBehaviour
     {
 		peaches = 0;
         animation = GetComponent<tk2dAnimatedSprite> ();
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < maxLives/2; i++)
 		{
 			hearts[i] = GameObject.Find("Heart"+i).GetComponent<tk2dSprite>();
 		}
@@ -68,7 +69,7 @@ public class Player : MonoBehaviour
 	{
 		lives += change;
 		
-		if (lives > 8) lives = 8;
+		if (lives > maxLives) lives = maxLives;
 		
 		if (lives < 1)
 		{
@@ -76,7 +77,7 @@ public class Player : MonoBehaviour
 			return;
 		}
 		
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < maxLives/2; i++)
 		{
 			if (lives >= 2*i+1)
 			{
