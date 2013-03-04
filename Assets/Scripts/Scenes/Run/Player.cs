@@ -14,14 +14,19 @@ public class Player : MonoBehaviour
 	private int lives = 8;
 	
 	private tk2dSprite[] hearts = new tk2dSprite[4];
+	private UILabel peachLabel = null;
+	private int peaches = 0;
 	
     void Awake ()
     {
+		peaches = 0;
         animation = GetComponent<tk2dAnimatedSprite> ();
 		for (int i = 0; i < 4; i++)
 		{
 			hearts[i] = GameObject.Find("Heart"+i).GetComponent<tk2dSprite>();
 		}
+		
+		peachLabel = GameObject.Find("PeachLabel").GetComponent<UILabel>();
     }
 
     public void Jump ()
@@ -48,6 +53,8 @@ public class Player : MonoBehaviour
 		
 		if (collision.collider.material.name.StartsWith("Life"))
 		{
+			peaches++;
+			peachLabel.text = string.Format("PEACHES {0}", peaches);
 			UpdateLife(1);
 			GameObject.Destroy(collision.collider.gameObject);
 		}
