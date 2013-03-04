@@ -7,12 +7,12 @@ public class Platform : MonoBehaviour
 
     public const float a = 1.0f;
     public const float b = 0.2f;
-    private float N = 25.5f;
+    private float N = 24.0f;
 
     public Vector3 Center { get; set; }
     public float Speed { get; set; }
     private float lastShroom = 0.0f;
-	private float lastTree   = 0.0f;
+	private float lastGrass   = 0.0f;
 	
 	private float lastPeach = 0.0f;
 	
@@ -22,13 +22,21 @@ public class Platform : MonoBehaviour
 	private float nextBird = 0.0f;
 	private float fromBird = 0.0f;
 	private float lastBird = 0.0f;
-
+	
+	private GameObject grassContainer = null;
+	private UILabel distanceLabel = null;
+	private float distance = 0f;
+	
     void Awake ()
     {
+		distance = 0.0f;
         Speed = 4f;
         Center = new Vector3 (525f, 440f, 0f);
 
         Regenerate ();
+		
+		grassContainer = GameObject.Find("Grass");
+		distanceLabel = GameObject.Find("DistanceLabel").GetComponent<UILabel>();
     }
 
     public Vector3 GenerateXY (float theta)
@@ -62,9 +70,10 @@ public class Platform : MonoBehaviour
         var shroom = GameObject.Instantiate(Resources.Load("Prefabs/Run/Mushroom"));
     }
 	
-	private void GenerateTree()
+	private void GenerateGrass()
     {
-        var shroom = GameObject.Instantiate(Resources.Load("Prefabs/Run/Tree"));
+        GameObject grass = GameObject.Instantiate(Resources.Load("Prefabs/Run/Grass")) as GameObject;
+		grass.transform.parent = grassContainer.transform;
     }
 
 	private void GenerateBird()
@@ -80,17 +89,16 @@ public class Platform : MonoBehaviour
 	
     void Update ()
     {
-        if (Time.time - lastShroom > 2.7 && Random.value < 0.1f) {
+        if (Time.time - lastShroom > 2.7f && Random.value < 0.1f) {
             GenerateShroom ();
             lastShroom = Time.time;
         }
 
-	    /*
-	    if (Time.time - lastTree > 1.5 && Random.value < 0.1f) {
-            GenerateTree ();
-            lastTree = Time.time;
+	    
+	    if (Time.time - lastGrass > 0.05f && Random.value < 0.5f) {
+            GenerateGrass ();
+            lastGrass = Time.time;
         }
-        */
 		
 		if (Time.time > lastPeach + 10.0f && Random.value < 0.01f)
 		{
@@ -111,7 +119,9 @@ public class Platform : MonoBehaviour
 			fromBird = 0.0f;
 			nextBird = Random.Range(0.1f, 1.0f);
 		}
-
+		
+		distance += Time.deltaTime * 20;
+		distanceLabel.text = string.Format("{0:D4}m", (int)Mathf.Floor(distance));
 	}
 }
 
